@@ -4,6 +4,7 @@ LEX = lex
 RM = rm
 
 LIBLEX = '-ll'
+LIBREADLINE = '-lreadline'
 ifeq ($(shell ldconfig -p|grep -qw libfl; echo $$?), 0)
 LIBLEX = '-lfl'
 endif
@@ -11,7 +12,7 @@ endif
 default: xsm
 
 xsm: lex.yy.o machine.o main.o simulator.o word.o memory.o registers.o tokenize.o disk.o debug.o exception.o
-	$(CC) $(CFLAGS) -o xsm lex.yy.o machine.o main.o simulator.o word.o memory.o registers.o tokenize.o disk.o debug.o exception.o $(LIBLEX)
+	$(CC) $(CFLAGS) -o xsm lex.yy.o machine.o main.o simulator.o word.o memory.o registers.o tokenize.o disk.o debug.o exception.o $(LIBLEX) $(LIBREADLINE)
 
 lex.yy.c: parse.l
 	$(LEX) parse.l

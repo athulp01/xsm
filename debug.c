@@ -7,6 +7,8 @@ The XSM debugger.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 static debug_status _db_status;
 
@@ -128,7 +130,7 @@ int debug_next_step(int curr_ip)
 int debug_show_interface()
 {
     int done = FALSE, addr;
-    char command[DEBUG_COMMAND_LEN], prev_instr[DEBUG_STRING_LEN], next_instr[DEBUG_STRING_LEN];
+    char *command, prev_instr[DEBUG_STRING_LEN], next_instr[DEBUG_STRING_LEN];
 
     if (_db_status.skip > 0)
     {
@@ -158,11 +160,12 @@ int debug_show_interface()
 
     while (!done)
     {
-        printf("debug> ");
-        fgets(command, DEBUG_COMMAND_LEN, stdin);
+        command = readline("debug> ");
 
-        // Remove the dangling \n from fgets
-        strtok(command, "\n");
+        if(command && *command)
+            add_history(command);
+        else 
+            continue;
 
         if (!strcmp(command, "\n"))
             strncpy(command, _db_status.command, DEBUG_COMMAND_LEN);
